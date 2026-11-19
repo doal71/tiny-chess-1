@@ -9,18 +9,22 @@ A 4 KB chess engine in Python: 0x88 board, legal move generation
 transposition table, killer moves, late-move reductions, null-move
 pruning, and quiescence (captures, promotions, and all evasions when
 in check). Evaluation is PeSTO tapered: Texel-tuned middlegame/endgame
-piece-square tables with separate endgame material values.
+piece-square tables with separate endgame material values. The
+search is repetition-aware: a game-history table records every
+position played, and a repeated position scores 0, so the engine
+refuses draws in won positions instead of shuffling into
+threefold repetition.
 
 Search is a fixed node budget (75,000 nodes per move, iterative
 deepening at the root), so it is deterministic and never uses a clock.
-About 21,800 nodes/second; a move takes at most ~3.8 s, well under
+About 21,200 nodes/second; a move takes at most ~4.3 s, well under
 the 10 s limit.
 
-- `main.py` is the whole engine: 3,390 bytes, packed by the kit's
+- `main.py` is the whole engine: 3,450 bytes, packed by the kit's
   `makefun compress` from the readable `source.py`. Python 3.13,
   standard library only. It reads, imports or execs no other file
   in the repository.
-- `source.py` is the readable source (7,410 bytes). It is not part of
+- `source.py` is the readable source (7,592 bytes). It is not part of
   the submitted repository; `makefun bundle` sends it beside the
   sessions.
 
@@ -29,10 +33,10 @@ the 10 s limit.
 | trial | W-D-L | Elo |
 |-------|-------|-----|
 | trial-0 | 3-2-1 | 1,451 |
-| trial-1 | 2-4-0 | 1,451 |
-| trial-2 | 3-3-0 | 1,545 |
+| trial-1 | 3-2-1 | 1,451 |
+| trial-2 | 5-0-1 | 1,654 |
 
-Mean practice Elo about 1,482, above the 1,154 needed to enter the
+Mean practice Elo about 1,519, above the 1,154 needed to enter the
 final. Move generation is verified by perft (startpos, Kiwipete,
 and four other standard positions, depths 1-3, all exact).
 
